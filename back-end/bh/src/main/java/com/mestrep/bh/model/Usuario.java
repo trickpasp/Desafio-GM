@@ -1,5 +1,6 @@
 package com.mestrep.bh.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,6 +29,7 @@ public class Usuario implements UserDetails {
             mappedBy = "usuario")
     private List<Horario> horarios = new ArrayList<>();
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
 
     @ManyToMany(fetch = EAGER, cascade = ALL)
@@ -96,8 +98,8 @@ public class Usuario implements UserDetails {
         return perfis;
     }
 
-    public void addPerfil(Perfil perfil){
-        perfis.add(perfil);
+    public void setPerfil(List<Perfil> perfil){
+        this.perfis = perfil;
     }
 
     @Override
