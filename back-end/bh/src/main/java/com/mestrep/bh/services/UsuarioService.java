@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,9 +27,8 @@ public class UsuarioService implements DAO<Usuario> {
 
     @Override
     public Usuario salvar(Usuario usuario) {
-        System.out.println(usuario.getSenha() +" "+ usuario.getEmail() +" "+ usuario.getNome());
-        usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
-        usuario.addPerfil(new Perfil(com.mestrep.bh.model.enumeration.Perfil.USUARIO.getDescricao()));
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuario.setPerfil(Collections.singletonList(new Perfil("ROLE_USUARIO")));
         return usuarioRepository.save(usuario);
     }
 
