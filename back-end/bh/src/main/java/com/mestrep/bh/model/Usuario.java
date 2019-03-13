@@ -1,8 +1,8 @@
 package com.mestrep.bh.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ public class Usuario implements UserDetails {
             mappedBy = "usuario")
     private List<Horario> horarios = new ArrayList<>();
 
-    @JsonIgnore
     private String senha;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -37,8 +36,7 @@ public class Usuario implements UserDetails {
     public Usuario(String nome, String email, String senha) {
         this.nome = nome;
         this.email = email;
-        this.senha = senha;
-        addPerfil(new Perfil(com.mestrep.bh.model.enumeration.Perfil.USUARIO.getDescricao()));
+        this.senha = new BCryptPasswordEncoder().encode(senha);
     }
 
     public Integer getId() {
@@ -96,7 +94,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getPassword() {
-        return getUsername();
+        return getSenha();
     }
 
     @Override

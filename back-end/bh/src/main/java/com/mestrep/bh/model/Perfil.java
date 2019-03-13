@@ -16,6 +16,9 @@ public class Perfil implements GrantedAuthority {
     @NotNull
     private String nome;
 
+    public Perfil() {
+    }
+
     public Perfil(@NotNull String nome) {
         this.nome = nome;
     }
