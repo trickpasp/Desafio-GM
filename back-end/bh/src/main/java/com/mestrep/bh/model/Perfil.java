@@ -2,10 +2,7 @@ package com.mestrep.bh.model;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -43,4 +40,5 @@ public class Perfil implements GrantedAuthority {
     public String getAuthority() {
         return getNome();
     }
+
 }
