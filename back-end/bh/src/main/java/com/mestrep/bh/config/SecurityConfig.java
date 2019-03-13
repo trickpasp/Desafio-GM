@@ -26,13 +26,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
 
-    private static final String[] PUBLIC_MATCHERS = {
+    //Url publica para o h2, mas optei por retirar, não estava permitindo a alteracao
+    /*private static final String[] PUBLIC_MATCHERS = {
             "/h2-console/**"
-    };
+    };*/
 
+    //Metodos gets privado
     private static final String[] PUBLIC_MATCHERS_GET = {
             "/app/usuarios",
             "/app/horarios"
+    };
+
+    //Metodos post publicos
+    private static final String[] PUBLIC_MATCHERS_POST = {
+            "/app/usuario"
     };
 
     @Autowired
@@ -42,13 +49,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    //Configurando permissoes de seguranca, adicionando o cors, e adicionando o filtro
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http
             .authorizeRequests()
             .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
-            .antMatchers(PUBLIC_MATCHERS).permitAll()
+            .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
             .anyRequest().authenticated();
         http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -60,6 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
 
+    //Cors, utilizado para permitir cross-origin, é util para receber requisicao de qualquer origin, que por padrão, o spring desativa
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -67,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return source;
     }
 
+    //Criptografia de senha
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
