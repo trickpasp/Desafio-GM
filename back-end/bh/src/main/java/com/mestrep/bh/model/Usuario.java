@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+
 @Entity
 public class Usuario implements UserDetails {
 
@@ -20,14 +23,17 @@ public class Usuario implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL,
+    @OneToMany(cascade = ALL,
             fetch = FetchType.LAZY,
             mappedBy = "usuario")
     private List<Horario> horarios = new ArrayList<>();
 
     private String senha;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = EAGER, cascade = ALL)
+    @JoinTable(name = "usuario_perfis",
+            joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "perfil_id", referencedColumnName = "id"))
     private List<Perfil> perfis = new ArrayList<>();
 
     public Usuario() {
@@ -37,6 +43,13 @@ public class Usuario implements UserDetails {
         this.nome = nome;
         this.email = email;
         this.senha = new BCryptPasswordEncoder().encode(senha);
+    }
+
+    public Usuario(String nome, String email, String senha, List<Perfil> perfis) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.perfis = perfis;
     }
 
     public Integer getId() {
