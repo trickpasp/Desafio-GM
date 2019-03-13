@@ -25,6 +25,7 @@ public class UsuarioService implements DAO<Usuario> {
     }
 
 
+    //Criptografa senha de usuario, cria perfi e salva usuario
     @Override
     public Usuario salvar(Usuario usuario) {
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
