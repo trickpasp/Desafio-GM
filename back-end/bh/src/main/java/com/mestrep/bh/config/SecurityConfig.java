@@ -1,6 +1,5 @@
 package com.mestrep.bh.config;
 
-import com.mestrep.bh.services.UserDetailsServiceImp;
 import com.mestrep.bh.util.JWTAuthenticationFilter;
 import com.mestrep.bh.util.JWTAuthorizationFilter;
 import com.mestrep.bh.util.JWTUtil;
@@ -10,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -22,26 +22,26 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
-    private final JWTUtil jwtUtil;
+    //Metodos gets privado
+    private static final String[] PUBLIC_MATCHERS_GET = {
+            "/app/usuarios",
+            "/app/horarios/**",
+            "/**"
+    };
+    //Metodos post publicos
+    private static final String[] PUBLIC_MATCHERS_POST = {
+            "/app/usuario"
+    };
 
     //Url publica para o h2, mas optei por retirar, não estava permitindo a alteracao
     /*private static final String[] PUBLIC_MATCHERS = {
             "/h2-console/**"
     };*/
-
-    //Metodos gets privado
-    private static final String[] PUBLIC_MATCHERS_GET = {
-            "/app/usuarios",
-            "/app/horarios"
-    };
-
-    //Metodos post publicos
-    private static final String[] PUBLIC_MATCHERS_POST = {
-            "/app/usuario"
-    };
+    private final UserDetailsService userDetailsService;
+    private final JWTUtil jwtUtil;
 
     @Autowired
     public SecurityConfig(@Lazy UserDetailsService userDetailsService, JWTUtil jwtUtil) {
@@ -55,9 +55,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http
-            .authorizeRequests()
-            .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
-            .anyRequest().authenticated();
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
+                .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
+                .anyRequest().authenticated();
         http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
         http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
