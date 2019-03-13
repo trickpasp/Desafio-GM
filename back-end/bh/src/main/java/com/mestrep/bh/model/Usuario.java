@@ -1,6 +1,9 @@
 package com.mestrep.bh.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,8 +15,12 @@ import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Usuario implements UserDetails {
 
     @Id
@@ -24,8 +31,9 @@ public class Usuario implements UserDetails {
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     @OneToMany(cascade = ALL,
-            fetch = FetchType.LAZY,
+            fetch = LAZY,
             mappedBy = "usuario")
     private List<Horario> horarios = new ArrayList<>();
 
@@ -98,40 +106,47 @@ public class Usuario implements UserDetails {
         return perfis;
     }
 
-    public void setPerfil(List<Perfil> perfil){
-        this.perfis = perfil;
+    public void setPerfis(List<Perfil> perfis){
+        this.perfis = perfis;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getPerfis();
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return getSenha();
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return getEmail();
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
