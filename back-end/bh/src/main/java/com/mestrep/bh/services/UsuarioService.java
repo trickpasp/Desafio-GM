@@ -1,6 +1,7 @@
 package com.mestrep.bh.services;
 
 import com.mestrep.bh.interfaces.DAO;
+import com.mestrep.bh.model.Perfil;
 import com.mestrep.bh.model.Usuario;
 import com.mestrep.bh.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,9 @@ public class UsuarioService implements DAO<Usuario> {
 
     @Override
     public Usuario salvar(Usuario usuario) {
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        System.out.println(usuario.getSenha() +" "+ usuario.getEmail() +" "+ usuario.getNome());
+        usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
+        usuario.addPerfil(new Perfil(com.mestrep.bh.model.enumeration.Perfil.USUARIO.getDescricao()));
         return usuarioRepository.save(usuario);
     }
 
