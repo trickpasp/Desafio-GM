@@ -3,7 +3,6 @@ package com.mestrep.bh.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mestrep.bh.dto.CredenciaisDTO;
 import com.mestrep.bh.model.Usuario;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,16 +34,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     .readValue(request.getInputStream(), CredenciaisDTO.class);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(credenciaisDTO.getEmail(), credenciaisDTO.getSenha());
-
-            return authenticationManager.authenticate(authToken);
+            Authentication auth = authenticationManager.authenticate(authToken);
+            return auth;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
-        System.out.println(((Usuario) authResult.getPrincipal()).getNome());
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String username = ((Usuario) authResult.getPrincipal()).getUsername();
         String token = jwtUtil.generateToken(username);
         response.addHeader("Authorization", "Bearer " + token);

@@ -2,6 +2,7 @@ package com.mestrep.bh.config;
 
 import com.mestrep.bh.services.UserDetailsServiceImp;
 import com.mestrep.bh.util.JWTAuthenticationFilter;
+import com.mestrep.bh.util.JWTAuthorizationFilter;
 import com.mestrep.bh.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     @Autowired
-    public SecurityConfig(@Lazy UserDetailsServiceImp userDetailsService, JWTUtil jwtUtil) {
+    public SecurityConfig(@Lazy UserDetailsService userDetailsService, JWTUtil jwtUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
     }
@@ -55,11 +56,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
             .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
-            .antMatchers("/app/**").hasAnyRole("ROLE_ADMIN")
             .anyRequest().authenticated();
         http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+        http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
