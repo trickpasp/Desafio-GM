@@ -1,8 +1,8 @@
-package com.mestrep.bh.util;
+package com.mestrep.bh.security;
 
+import com.mestrep.bh.util.JWTUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -43,7 +43,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
-        if (jwtUtil.tokenValido(token)){
+        if (jwtUtil.tokenValido(token)) {
             String username = jwtUtil.getUsername(token);
             UserDetails usuario = userDetailsService.loadUserByUsername(username);
             return new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
