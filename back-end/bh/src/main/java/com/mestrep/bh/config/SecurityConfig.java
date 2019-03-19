@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
     //Metodos post publicos
     private static final String[] PUBLIC_MATCHERS_POST = {
-            "/app/usuario"
+            "/app/cadastroUsuario"
     };
 
     //Url publica para o h2, mas optei por retirar, não estava permitindo a alteracao
