@@ -145,7 +145,7 @@ export default class UserDetails extends Component {
               style={{ backgroundColor: '#5067FF' }}
               position="bottomRight"
               onPress={() => this.handleUserLogged()}>
-              <Icon name="account-plus" type="MaterialCommunityIcons"/>
+              <Icon name="clock" type="MaterialCommunityIcons"/>
             </Fab>
         </View>
       </Container>
