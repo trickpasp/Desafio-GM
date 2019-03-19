@@ -36,11 +36,6 @@ public class HorarioControler {
         return horarioService.salvar(horario, null, id);
     }
 
-    @GetMapping(value = "/horarios")
-    public List<HorarioDTO> listarTodosHorarios(){
-        return horarioService.listarTodosDTO();
-    }
-
     @GetMapping(value = "/horarios/{id}")
     public List<HorarioDTO> listarTodosHorarios(@PathVariable("id") Integer id){
         return horarioService.listarTodosHorariosDeUsuarioPorId(null, id);
