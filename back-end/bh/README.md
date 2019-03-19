@@ -123,11 +123,29 @@ curl http://localhost:8080/api/cadastroUsuario -H "Content-Type: application/jso
     - Cadastro de horario no Windows e no (*nix ou Max), segue a ordem
 ```console
 Windows
-curl http://localhost:8080/app/horario -H "Content-Type: application/json" -X POST -d '{\"qtdHoras\":[NUMERO DE HORAS],\"data\":\"[DATA]\"}'
+curl http://localhost:8080/app/horario -H "Content-Type: application/json, Authorization: Bearer [ACCESS_TOKEN]" -X POST -d '{\"qtdHoras\":[NUMERO DE HORAS],\"data\":\"[DATA]\"}'
 ```
 ```console
 (*nix ou Max)
-curl http://localhost:8080/app/horario -H "Content-Type: application/json" -X POST -d '{"qtdHoras":[NUMERO DE HORAS],"data":"[DATA]"}'
+curl http://localhost:8080/app/horario -H "Content-Type: application/json, Authorization: Bearer [ACCESS_TOKEN]" -X POST -d '{"qtdHoras":[NUMERO DE HORAS],"data":"[DATA]"}'
+```
+```json
+{
+  "id": null,
+  "qtdHoras": 8,
+  "data": 1552532400000
+}
+```
+
+- Acessar recurso:
+    - Cadastro de horario por id de usuário no Windows e no (*nix ou Max), segue a ordem
+```console
+Windows
+curl http://localhost:8080/app/horario/{id} -H "Content-Type: application/json, Authorization: Bearer [ACCESS_TOKEN]" -X POST -d '{\"qtdHoras\":[NUMERO DE HORAS],\"data\":\"[DATA]\"}'
+```
+```console
+(*nix ou Max)
+curl http://localhost:8080/app/horario/{id} -H "Content-Type: application/json, Authorization: Bearer [ACCESS_TOKEN]" -X POST -d '{"qtdHoras":[NUMERO DE HORAS],"data":"[DATA]"}'
 ```
 ```json
 {
