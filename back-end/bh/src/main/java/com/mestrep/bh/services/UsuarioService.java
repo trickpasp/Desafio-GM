@@ -1,5 +1,8 @@
 package com.mestrep.bh.services;
 
+import com.mestrep.bh.dto.UsuarioDTO;
+import com.mestrep.bh.error.ObjectNotFoundExecption;
+import com.mestrep.bh.error.UsuarioExecption;
 import com.mestrep.bh.interfaces.DAO;
 import com.mestrep.bh.model.Perfil;
 import com.mestrep.bh.model.Usuario;
@@ -10,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UsuarioService implements DAO<Usuario> {
@@ -28,8 +33,11 @@ public class UsuarioService implements DAO<Usuario> {
     //Criptografa senha de usuario, cria perfi e salva usuario
     @Override
     public Usuario salvar(Usuario usuario) {
+        Optional<Usuario> isExist = Optional.ofNullable(listarUsuarioPorEmail(usuario.getEmail()));
+        if (isExist.isPresent())
+            throw new UsuarioExecption("Usuário já existe!");
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-        usuario.setPerfil(Collections.singletonList(new Perfil("ROLE_USUARIO")));
+        usuario.setPerfis(Collections.singletonList(new Perfil("ROLE_USUARIO")));
         return usuarioRepository.save(usuario);
     }
 
@@ -43,7 +51,26 @@ public class UsuarioService implements DAO<Usuario> {
         return usuarioRepository.findAll();
     }
 
-    public Usuario listarUsuarioPorEmail(String email){
+    public Usuario listarUsuarioPorEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
+
+    public Usuario listarUsuarioPorId(Integer id) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        if (optionalUsuario.isPresent())
+            return optionalUsuario.get();
+        throw new ObjectNotFoundExecption("Usuário não encontrado!");
+    }
+
+    public Usuario deDTO(UsuarioDTO usuarioDTO) {
+        return new Usuario(usuarioDTO.getNome(), usuarioDTO.getEmail(), usuarioDTO.getSenha());
+    }
+
+    public Usuario listarUsuarioPorIdOuEmail(String email, Integer id) {
+        if (email == null && id != null) {
+            return listarUsuarioPorId(id);
+        }
+        return listarUsuarioPorEmail(email);
+    }
+
 }
