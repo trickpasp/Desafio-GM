@@ -65,8 +65,8 @@ public class HorarioService implements DAO<Horario> {
         return horarios;
     }
 
-    public List<HorarioDTO> listarTodosHorariosDeUsuarioPorId(Integer usuarioId){
-        Usuario usuario = usuarioService.listarUsuarioPorId(usuarioId);
+    public List<HorarioDTO> listarTodosHorariosDeUsuarioPorId(String email, Integer usuarioId){
+        Usuario usuario = usuarioService.listarUsuarioPorIdOuEmail(email, usuarioId);
         Optional<List<Horario>> optionalHorario = Optional.ofNullable(horarioRepository.findAllByUsuario_Id(usuario.getId()));
         List<HorarioDTO> horarios = new ArrayList<>();
         optionalHorario.ifPresent(horarios1 -> horarios1.forEach(x -> horarios.add(new HorarioDTO(x))));

@@ -43,6 +43,12 @@ public class HorarioControler {
 
     @GetMapping(value = "/horarios/{id}")
     public List<HorarioDTO> listarTodosHorarios(@PathVariable("id") Integer id){
-        return horarioService.listarTodosHorariosDeUsuarioPorId(id);
+        return horarioService.listarTodosHorariosDeUsuarioPorId(null, id);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USUARIO')")
+    @GetMapping(value = "/horarios")
+    public List<HorarioDTO> listarTodosHorarios(Principal principal){
+        return horarioService.listarTodosHorariosDeUsuarioPorId(principal.getName(), null);
     }
 }
