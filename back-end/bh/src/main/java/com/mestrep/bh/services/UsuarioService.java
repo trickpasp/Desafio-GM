@@ -7,14 +7,12 @@ import com.mestrep.bh.interfaces.DAO;
 import com.mestrep.bh.model.Perfil;
 import com.mestrep.bh.model.Usuario;
 import com.mestrep.bh.repository.UsuarioRepository;
+import com.mestrep.bh.security.UserServiceSec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UsuarioService implements DAO<Usuario> {
@@ -48,7 +46,19 @@ public class UsuarioService implements DAO<Usuario> {
 
     @Override
     public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
+        Usuario usuario = UserServiceSec.authenticated();
+        List<Usuario> usuarioList = new ArrayList<>();
+        if (usuario == null)
+            return usuarioRepository.findAll();
+        Optional<List<Usuario>> optionalUsuarios = Optional.ofNullable(usuarioRepository.findAll());
+        optionalUsuarios
+                .ifPresent(usuarios ->
+                        usuarios
+                                .stream()
+                                .filter(p -> !p.getId().equals(usuario.getId()))
+                                .forEach(usuarioList::add)
+                );
+        return usuarioList;
     }
 
     public Usuario listarUsuarioPorEmail(String email) {
