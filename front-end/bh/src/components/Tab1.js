@@ -5,6 +5,7 @@ import axios from 'axios'
 
 import UserCard from './UserCard';
 import { Actions } from 'react-native-router-flux';
+import { url } from '../util/url_back';
 
 export default class Tab1 extends Component {
   constructor(props) {
@@ -44,7 +45,7 @@ export default class Tab1 extends Component {
   handleGetUsersLogged = async (token) => {
     try {
       const response = await axios
-                                .get("http://192.168.0.5:8080/app/usuarios", 
+                                .get(url + "/app/usuarios", 
                                   {
                                     headers: {'Authorization': 'Bearer ' + token}
                                   }

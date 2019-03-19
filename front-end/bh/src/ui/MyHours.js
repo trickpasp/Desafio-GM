@@ -7,6 +7,7 @@ import { Actions } from 'react-native-router-flux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import HoursCard from '../components/HoursCard';
 import InsertUserModal from '../components/InsertHoursModal';
+import { url } from '../util/url_back';
 
 export default class MyHours extends Component {
 
@@ -44,7 +45,7 @@ export default class MyHours extends Component {
   
   handleGethours = async (token) => {
     try {
-      const response = await axios.get("http://192.168.0.5:8080/app/horarios",
+      const response = await axios.get(url + "/app/horarios",
                                      {
                                          headers: {'Authorization': 'Bearer ' + token}
                                      })
@@ -57,7 +58,7 @@ export default class MyHours extends Component {
   handlePostHours = async (qtdHoras, data, token) => {
     this.setState({spinner: true});
     try {
-      const response = await axios.post("http://192.168.0.5:8080/app/horario",
+      const response = await axios.post(url + "/app/horario",
                                   {
                                     qtdHoras,
                                     data

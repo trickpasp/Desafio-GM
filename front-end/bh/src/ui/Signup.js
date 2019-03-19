@@ -7,6 +7,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 import * as emailValidator from 'email-validator';
 import axios from 'axios';
+import { url } from '../util/url_back';
 
 export default class Signup extends Component {
   constructor(props) {
@@ -37,8 +38,7 @@ export default class Signup extends Component {
       this.setState({spinner: true})
       try {
         await axios
-                  .post(
-                    "http://192.168.0.5:8080/app/cadastroUsuario",
+                  .post(url + "/app/cadastroUsuario",
                     {
                       nome, 
                       email, 
