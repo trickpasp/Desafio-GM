@@ -1,18 +1,20 @@
 package com.mestrep.bh.controller;
 
+import com.mestrep.bh.dto.UsuarioDTO;
 import com.mestrep.bh.model.Usuario;
 import com.mestrep.bh.services.UsuarioService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("app")
+@RequestMapping("/app")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -22,10 +24,10 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @ApiOperation(value = "Inseri um usuário. Só quem pode inserir um usuário é um administrador")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    @PostMapping(value = "/usuario", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Usuario salvarUsuario(@RequestBody Usuario usuario){
+    @ApiOperation(value = "Inserir um usuário")
+    @PostMapping(value = "/cadastroUsuario", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Usuario salvarUsuario(@RequestBody UsuarioDTO usuarioDTO){
+        Usuario usuario = usuarioService.deDTO(usuarioDTO);
         return usuarioService.salvar(usuario);
     }
 
