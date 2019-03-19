@@ -37,7 +37,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             CredenciaisDTO credenciaisDTO = new ObjectMapper()
                     .readValue(request.getInputStream(), CredenciaisDTO.class);
-
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(credenciaisDTO.getEmail(), credenciaisDTO.getSenha());
             return authenticationManager.authenticate(authToken);
         } catch (IOException e) {
@@ -47,10 +46,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String username = ((Usuario) authResult.getPrincipal()).getUsername();
-        String token = jwtUtil.generateToken(username);
+        Usuario usuario = ((Usuario) authResult.getPrincipal());
+        String token = jwtUtil.generateToken(usuario.getUsername());
         ObjectMapper mapper = new ObjectMapper();
-        String jsonResponse = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(new TokenDTO(token));
+        String jsonResponse = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(new TokenDTO(token, usuario));
         response.getWriter().println(jsonResponse);
     }
 
