@@ -56,7 +56,7 @@ public class Usuario implements UserDetails {
     public Usuario(String nome, String email, String senha) {
         this.nome = nome;
         this.email = email;
-        this.senha = new BCryptPasswordEncoder().encode(senha);
+        this.senha = senha;
     }
 
     public Usuario(String nome, String email, String senha, List<Perfil> perfis) {
