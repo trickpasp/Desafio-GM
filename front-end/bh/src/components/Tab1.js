@@ -35,7 +35,7 @@ export default class Tab1 extends Component {
   
   handleGetUsers = async () => {
     try {
-      const response = await axios.get("http://192.168.0.5:8080/app/usuarios")
+      const response = await axios.get(url + "/app/usuarios")
       this.setState({users: response.data});
     } catch (error) {
       console.log(error.message)
